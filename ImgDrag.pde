@@ -26,12 +26,21 @@ public class ImgDrag{
   }
   
   boolean isMouseover(float mx, float my) {
-    isOver = mx > x - 0.5*w && mx < x + 0.5*w && my > y-0.5*h && my < y+0.5*h;
+   // isOver = mx > x - 0.5*w && mx < x + 0.5*w && my > y-0.5*h && my < y+0.5*h;
+    isOver = (mx > x) && (mx < (x + w)) && (my > y) && (my < (y + h));
     if(isOver){
-      this.x = negativeControl(mx - 0.5*w);
-      this.y = negativeControl(my - 0.5*h);
+      this.x = outOfBorder(negativeControl(mx - 0.5*w), w, totalW);
+      this.y = outOfBorder(negativeControl(my - 0.5*h), h, totalH);
+      //TODO ojo abajo!no permitir arrastrar para afuera
     }
    return isOver; 
+  }
+  
+  float outOfBorder(float position, int objDim,int total){
+    if(position + objDim > total){
+      return total - objDim;
+    }
+    return position;
   }
   
   float negativeControl(float position){

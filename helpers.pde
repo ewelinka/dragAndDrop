@@ -32,6 +32,8 @@ int findMax(int[] numsarray){
   }
 }
 
-int rescalePosition(int pos){
-  return int(pos*rescaleFactor+94);
+int rescalePosition(int pos, float rescale, int displace){
+ // return int(pos*rescaleFactor+displace);
+ float d = (pos*rescale - displace)/6;
+  return int(pos*rescale + d);
 }

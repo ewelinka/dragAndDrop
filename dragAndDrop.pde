@@ -15,39 +15,40 @@ int brightestThreshold;
 int pixsThreshold;
 //video capture params
 int wcap,hcap,totalW,totalH;
-float rescaleFactor;
+float rescaleFactorX,rescaleFactorY;
+int displaceX, displaceY;
 int[]xsums, ysums;
 
 PImage destination; 
+PImage back; 
 Rectangle monitor = new Rectangle();
-//proyector 1024x768
+
 // ?? configurar la camara
 // ? salida por proyector
 // ignorar el punto de luz que genera el proyector
 
 void setup(){
   //size(totalW,totalH);
-  
+  back = loadImage("sezam1440x900.gif");  
   wcap = 320;
   hcap = 240;
-  rescaleFactor = 4.5;
-  totalW = int(wcap*rescaleFactor);
-  totalH = int(hcap*rescaleFactor);
-  
-   GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-  GraphicsDevice[] gs = ge.getScreenDevices();
-  // gs[1] gets the *second* screen. gs[0] would get the primary screen
-  GraphicsDevice gd = gs[0];
-  GraphicsConfiguration[] gc = gd.getConfigurations();
-  monitor = gc[0].getBounds();
-  
-  println(monitor.x + " " + monitor.y + " " + monitor.width + " " + monitor.height);
-  //size(monitor.width, monitor.height);
-  size(1440, 900);
-  rescaleFactor = monitor.width/wcap;
+  rescaleFactorX = 4.5;  
+  rescaleFactorY = 3.75;  
+
+
+  totalW = int(wcap*rescaleFactorX);
+  totalH = int(hcap*rescaleFactorY);
+  displaceX = 0;
+  displaceY = totalH/2;
+  println("totalW: "+totalW+" totalH: "+totalH);
+  //proyector 1440x900
+  size(totalW, totalH);
+
+
+
   
   // set thresholds
-  brightestThreshold = 220;
+  brightestThreshold = 170;
   pixsThreshold = 1;
   
   // start camara
@@ -76,16 +77,17 @@ void setup(){
 }
   
 void draw(){
-  
+  xmr = -1;
+  ymr = -1;
   //frame.setLocation(monitor.x, monitor.y);
   frame.setLocation(0, 0);
   frame.setAlwaysOnTop(true); 
-  background(0);
+  image(back,0,0);
 
   // todo: implement function for pictures separation if they are too close
   
-  if (false) {
-  //if (video.available()) {
+//  if (false) {
+  if (video.available()) {
     video.read();
     
     video.loadPixels();
@@ -119,14 +121,17 @@ void draw(){
     rect(0,0,wcap+4,hcap+4);
     image(destination,2,2);
     if( xm != -1 && ym != -1){
-      xmr = rescalePosition(xm);
-      ymr = rescalePosition(ym);
+      //xmr = rescalePosition(xm,rescaleFactorX,displaceX);
+      xmr = int(xm*rescaleFactorX);
+      ymr = rescalePosition(ym,rescaleFactorY,displaceY);
       rect(xmr,ymr,10,10);
+      //rect(xm*rescaleFactorX,ym*rescaleFactorY,10,10);
     }
   }else{
     println("novideo");
   }
   updateimages(xmr,ymr);
+  rect(totalW/2 -2, totalH/2 -2,4,4);
 }
   
 boolean sketchFullScreen() {

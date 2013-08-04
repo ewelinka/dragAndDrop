@@ -14,7 +14,6 @@ public class ImgDrag{
    this.h = imgDefault.height;
    this.imgOver = imgOver;
    this.isOver = false;
-   //registerDraw(this);
  }
  
   void displayDefault() {
@@ -31,7 +30,6 @@ public class ImgDrag{
     if(isOver){
       this.x = outOfBorder(negativeControl(mx - 0.5*w), w, totalW);
       this.y = outOfBorder(negativeControl(my - 0.5*h), h, totalH);
-      //TODO ojo abajo!no permitir arrastrar para afuera
     }
    return isOver; 
   }
